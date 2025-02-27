@@ -6,7 +6,7 @@
 /*   By: antoinemura <antoinemura@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/27 12:19:21 by antoinemura       #+#    #+#             */
-/*   Updated: 2025/02/27 12:19:22 by antoinemura      ###   ########.fr       */
+/*   Updated: 2025/02/27 16:56:14 by antoinemura      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,10 @@ t_data	*init_data(t_mgc *mgc)
 	if (!data)
 		ft_error(mgc, "data allocation :");
 	data->forks = NULL;
+	data->philo_last_meal = NULL;
 	data->philo = NULL;
+	data->stop_flag = NULL;
+	data->stop_mutex = NULL;
 	data->nb_philo = 0;
 	data->time_to_die = 0;
 	data->time_to_sleep = 0;
@@ -37,9 +40,6 @@ t_data	*init_data(t_mgc *mgc)
 	data->forks = NULL;
 	if (pthread_mutex_init(&(data->print_mutex), NULL) != 0)
 		ft_error(mgc, "print mutex");
-	if (pthread_mutex_init(&(data->stop_mutex), NULL) != 0)
-		ft_error(mgc, "stop mutex");
-	data->stop_flag = false;
 	return (data);
 }
 
@@ -48,8 +48,16 @@ bool	init_mutex(t_mgc *mgc, t_data *data)
 	ssize_t	index;
 	index = 0;
 	data->forks = mgc_create_block(mgc, sizeof(pthread_mutex_t), data->nb_philo);
+	data->philo_last_meal_mutex = mgc_create_block(mgc, sizeof(pthread_mutex_t), data->nb_philo);
+	data->stop_mutex = mgc_create_block(mgc, sizeof(pthread_mutex_t), data->nb_philo);
+	data->stop_flag = mgc_create_block(mgc, sizeof(bool), data->nb_philo);
 	while (index < data->nb_philo)
 	{
+		data->stop_flag[index] = false;
+		if (pthread_mutex_init(&(data->stop_mutex[index]), NULL) != 0)
+			return (perror("pthread_mutex_init failed"), false);
+		if (pthread_mutex_init(&(data->philo_last_meal_mutex[index]), NULL) != 0)
+			return (perror("pthread_mutex_init failed"), false);
 		if (pthread_mutex_init(&(data->forks[index]), NULL) != 0)
 			return (perror("pthread_mutex_init failed"), false);
 		index++;
@@ -69,6 +77,7 @@ void	simulation(t_mgc *mgc, t_data *data)
 	if (!philo_args)
 		exit(EXIT_FAILURE);
 	data->philo = mgc_create_block(mgc, sizeof(pthread_t), data->nb_philo);
+	data->philo_last_meal = mgc_create_block(mgc, sizeof(long long), data->nb_philo);
 	if (!data->philo)
 		exit(EXIT_FAILURE);
 	while (index < data->nb_philo)
@@ -81,17 +90,6 @@ void	simulation(t_mgc *mgc, t_data *data)
 	}
 }
 
-int	is_int(char *arg, void *result)
-{
-	long	val;
-
-	val = ft_atoi(arg);
-	if (val <= 0)
-		return (false);
-	*(int *)result = val;
-	return (true);
-}
-
 void	terminate(t_mgc *mgc, t_data *data)
 {
 	ssize_t	index;
@@ -101,11 +99,32 @@ void	terminate(t_mgc *mgc, t_data *data)
 	{
 		pthread_join(data->philo[index], NULL);
 		pthread_mutex_destroy(&(data->forks[index]));
-		index++;;
+		pthread_mutex_destroy(&(data->stop_mutex[index]));
+		index++;
 	}
 	pthread_mutex_destroy(&(data->print_mutex));
-	pthread_mutex_destroy(&(data->stop_mutex));
 	mgc_free(mgc);
+}
+
+bool	reaper(__attribute__((unused)) t_mgc *mgc, t_data *data)
+{
+	ssize_t	index;
+	
+	index = 0;
+	while (index < data->nb_philo)
+	{
+		pthread_mutex_lock(&data->philo_last_meal_mutex[index]);
+		if (get_time_in_ms() - data->philo_last_meal[index] > data->time_to_die)
+		{
+			thread_print(data, index, "died");
+			pthread_mutex_lock(&data->stop_mutex[index]);
+			data->stop_flag[index] = true;
+			pthread_mutex_unlock(&data->stop_mutex[index]);
+		}
+		pthread_mutex_unlock(&data->philo_last_meal_mutex[index]);
+		index++;
+	}
+	return (true);
 }
 
 int	main(int argc, char **argv)
@@ -122,7 +141,7 @@ int	main(int argc, char **argv)
 	if (!data)
 		ft_error(mgc, "init data");
 	if (!handle_args(argc, argv, data))
-		ft_error(mgc, "All arguments must be strictly positive.");
+		ft_error(mgc, "All arguments must be integers strictly positive.");
 	init_mutex(mgc, data);
 	simulation(mgc, data);
 	terminate(mgc, data);

@@ -6,11 +6,22 @@
 /*   By: antoinemura <antoinemura@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/27 12:03:32 by antoinemura       #+#    #+#             */
-/*   Updated: 2025/02/27 12:08:49 by antoinemura      ###   ########.fr       */
+/*   Updated: 2025/02/27 14:57:06 by antoinemura      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
+
+int	is_int(char *arg, ssize_t *result)
+{
+	long	val;
+
+	val = ft_atoi(arg);
+	if (val <= 0 || val > INT_MAX)
+		return (false);
+	*result = val;
+	return (true);
+}
 
 bool	handle_args(int argc, char **argv, t_data *data)
 {

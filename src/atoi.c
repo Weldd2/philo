@@ -6,30 +6,24 @@
 /*   By: antoinemura <antoinemura@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/13 19:45:09 by marvin            #+#    #+#             */
-/*   Updated: 2025/02/25 15:58:18 by antoinemura      ###   ########.fr       */
+/*   Updated: 2025/02/27 14:50:07 by antoinemura      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-int	ft_atoi(const char *nptr)
-{
-	int	signe;
-	int	total;
+#include "philo.h"
 
-	signe = 1;
-	total = 0;
-	while ((*nptr >= 9 && *nptr <= 13) || *nptr == ' ')
-		nptr++;
-	if (*nptr == '-' || *nptr == '+')
+long	ft_atoi(const char *nptr)
+{
+	long		ret;
+
+	ret = 0;
+	while (*nptr >= '0' && *nptr <= '9')
 	{
-		if (*nptr == '-')
-			signe = -signe;
+		ret *= 10;
+		ret += (*nptr - '0');
 		nptr++;
 	}
-	while (*nptr <= '9' && *nptr >= '0')
-	{
-		total = total * 10;
-		total += (*nptr - '0');
-		nptr++;
-	}
-	return (total * signe);
+	if (*nptr != '\0')
+		return (0);
+	return (ret);
 }

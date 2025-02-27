@@ -25,6 +25,9 @@ void	philo_eat(t_data *data, int index)
 		thread_print(data, index, "has taken a fork");
 	}
 	thread_print(data, index, "is eating");
+	pthread_mutex_lock(&data->philo_last_meal_mutex[index]);
+	data->philo_last_meal[index] = get_time_in_ms();
+	pthread_mutex_unlock(&data->philo_last_meal_mutex[index]);
 	usleep(data->time_to_eat * 1000);
 	pthread_mutex_unlock(&data->forks[index]);
 	pthread_mutex_unlock(&data->forks[(index + 1) % data->nb_philo]);
@@ -34,9 +37,4 @@ void	philo_sleep(t_data *data, int index)
 {
 	thread_print(data, index, "is sleeping");
 	usleep(data->time_to_sleep * 1000);
-}
-
-void	philo_think(t_data *data, int index)
-{
-	thread_print(data, index, "is thinking");
 }
