@@ -126,6 +126,9 @@ $(OBJDIR)/%.o: %.c
 	@mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) $(INCS) -c $< -o $@
 
+gdb:
+	gdb --args ./philo 1 1000 100 3 10
+
 # -----------------------------------------------------------------------------
 # Nettoyage des fichiers objets
 # -----------------------------------------------------------------------------
@@ -154,11 +157,16 @@ install:
 # -----------------------------------------------------------------------------
 # Règles de debug, valgrind
 # -----------------------------------------------------------------------------
-VALGRIND_FLAGS = --leak-check=full --show-leak-kinds=all
-TEST_ARGUMENTS = 
+VALGRIND_FLAGS = --leak-check=full --show-leak-kinds=all --track-origins=yes
+TEST_ARGUMENTS = 3 700 100 100 7
 
 valgrind: CFLAGS += -g
 valgrind: re
+	valgrind $(VALGRIND_FLAGS) ./$(NAME) $(TEST_ARGUMENTS)
+
+helgrind: CFLAGS += -g
+helgrind: VALGRIND_FLAGS = --tool=helgrind
+helgrind: re
 	valgrind $(VALGRIND_FLAGS) ./$(NAME) $(TEST_ARGUMENTS)
 
 debug: CFLAGS += -g
