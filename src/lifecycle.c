@@ -6,7 +6,7 @@
 /*   By: antoinemura <antoinemura@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/27 12:17:54 by antoinemura       #+#    #+#             */
-/*   Updated: 2025/03/04 11:52:12 by antoinemura      ###   ########.fr       */
+/*   Updated: 2025/03/04 13:07:34 by antoinemura      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,6 @@ void	die(t_data *data, int index)
 	stop_threads(data);
 	pthread_mutex_lock(&data->print_mutex);
 	printf("%lld %d %s\n", get_time_in_ms(), index, "died");
-	fflush(stdout);
 	pthread_mutex_unlock(&data->print_mutex);
 	EX("%d died, death detection time : %lld", index, (get_time_in_ms() - data->philo_last_meal[index]) - data->time_to_die);
 }
@@ -51,7 +50,7 @@ void	*philo_lifecycle(void *arg)
 		exit(EXIT_FAILURE);
 	philo_args = (t_philo_args*)arg;
 	data = philo_args->data;
-	index = philo_args->index;	
+	index = philo_args->index;
 	while (!is_dead(data))
 	{
 		philo_eat(data, index);
@@ -78,16 +77,11 @@ void	*reaper(void *void_data)
 	while (1)
 	{
 		usleep(2000);
-		pthread_mutex_lock(&data->philo_last_meal_mutex[index]);
-		if ((get_time_in_ms() - data->philo_last_meal[index]) >= data->time_to_die)
+		if ((get_time_in_ms() - get_philo_meal_time(data, index)) >= data->time_to_die)
 			die(data, index);
-		pthread_mutex_unlock(&data->philo_last_meal_mutex[index]);
-		if (data->must_eat != 0)
+		if (data->must_eat != 0 && (get_philo_meal_count(data, index) >= data->must_eat))
 		{
-			pthread_mutex_lock(&data->philo_meal_count_mutex[index]);
-			if (data->philo_meal_count[index] >= data->must_eat)
-				bitmask_set(mask, index);
-			pthread_mutex_unlock(&data->philo_meal_count_mutex[index]);
+			bitmask_set(mask, index);
 			if (are_bitmask_all_set(mask))
 				stop_threads(data);
 		}
