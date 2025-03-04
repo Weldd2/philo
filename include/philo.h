@@ -24,6 +24,7 @@
 
 typedef struct s_data
 {
+	bool			stop_flag;
 	pthread_t		*philo;
 	pthread_t		reaper;
 	ssize_t			*philo_meal_count;
@@ -38,7 +39,6 @@ typedef struct s_data
 	pthread_mutex_t	*forks;
 	pthread_mutex_t	print_mutex;
 	pthread_mutex_t	stop_mutex;
-	bool			stop_flag;
 }	t_data;
 
 typedef int	(*t_validator)(char *arg, void *result);

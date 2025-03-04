@@ -2,7 +2,7 @@
 
 void	thread_print(t_data *data, int index, char *msg)
 {
-	if (!data)
+	if (is_dead(data))
 		return ;
 	pthread_mutex_lock(&data->print_mutex);
 	printf("%lld %d %s\n", get_time_in_ms(), index, msg);
@@ -13,7 +13,7 @@ void	philo_eat(t_data *data, int index)
 {
 	pthread_mutex_lock(&data->forks[(index + (index % 2)) % data->nb_philo]);
 	thread_print(data, index, "has taken a fork");
-	if (data->nb_philo != 0)
+	if (data->nb_philo != 1)
 	{
 		pthread_mutex_lock(&data->forks[(index + ((index + 1) % 2)) % data->nb_philo]);
 		thread_print(data, index, "has taken a fork");
