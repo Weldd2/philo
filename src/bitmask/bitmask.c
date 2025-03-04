@@ -6,7 +6,7 @@
 /*   By: antoinemura <antoinemura@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/03 21:34:21 by antoinemura       #+#    #+#             */
-/*   Updated: 2025/03/03 22:29:19 by antoinemura      ###   ########.fr       */
+/*   Updated: 2025/03/04 20:02:40 by antoinemura      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,16 +21,16 @@ t_bitmask	*bitmask_create(int nbits)
 		return (NULL);
 	mask->nbits = nbits;
 	mask->nwords = (nbits + BITS_PER_WORD - 1) / BITS_PER_WORD;
-	mask->words = calloc(mask->nwords, sizeof(word_t));
+	mask->words = calloc(mask->nwords, sizeof(t_word));
 	if (!mask->words)
 		return (free(mask), NULL);
-	mask->count = 0;	
+	mask->count = 0;
 	return (mask);
 }
 
 void	bitmask_set(t_bitmask *bitmask, int index)
 {
-	word_t	mask;
+	t_word	mask;
 
 	mask = (1ULL << index % BITS_PER_WORD);
 	if ((bitmask->words[index / BITS_PER_WORD] & mask) == 0)

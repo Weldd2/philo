@@ -6,7 +6,7 @@
 /*   By: antoinemura <antoinemura@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/25 20:38:09 by antoinemura       #+#    #+#             */
-/*   Updated: 2025/02/26 22:10:54 by antoinemura      ###   ########.fr       */
+/*   Updated: 2025/03/04 19:34:57 by antoinemura      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ t_mgc	*mgc_init(void)
 	return (mgc);
 }
 
-void	*mgc_create_block(t_mgc *mgc, size_t size, size_t nb_elem)
+void	*mgc_alloc(t_mgc *mgc, size_t size, size_t nb_elem)
 {
 	void	*block;
 
