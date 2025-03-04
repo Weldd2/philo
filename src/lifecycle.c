@@ -6,7 +6,7 @@
 /*   By: antoinemura <antoinemura@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/27 12:17:54 by antoinemura       #+#    #+#             */
-/*   Updated: 2025/03/04 13:25:52 by antoinemura      ###   ########.fr       */
+/*   Updated: 2025/03/04 15:34:48 by antoinemura      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,19 +21,20 @@ void	stop_threads(t_data *data)
 
 void	die(t_data *data, int index)
 {
+	long long	time;
+
+	time = timestamp();
 	stop_threads(data);
 	pthread_mutex_lock(&data->print_mutex);
-	printf("%lld %d %s\n", get_time_in_ms(), index, "died");
+	printf("%lld %d %s\n", time, index, "died");
 	pthread_mutex_unlock(&data->print_mutex);
-	EX("%d died, death detection time : %lld", index, (get_time_in_ms() - data->philo_last_meal[index]) - data->time_to_die);
+	EX("%d died, death detection time : %lld", index, (time - data->philo_last_meal[index]) - data->time_to_die);
 }
 
 bool	is_dead(t_data *data)
 {
 	bool	r;
 
-	if (!data)
-		return (false);
 	pthread_mutex_lock(&data->stop_mutex);
 	r = data->stop_flag;
 	pthread_mutex_unlock(&data->stop_mutex);
@@ -45,16 +46,20 @@ void	*philo_lifecycle(void *arg)
 	t_philo_args	*philo_args;
 	t_data			*data;
 	int				index;
+	ssize_t			meal_count;
 
 	if (!arg)
 		exit(EXIT_FAILURE);
 	philo_args = (t_philo_args*)arg;
 	data = philo_args->data;
 	index = philo_args->index;
+	meal_count = 0;
 	while (!is_dead(data))
 	{
 		philo_eat(data, index);
-		increment_philo_meal_count(data, index);
+		meal_count++;
+		if (meal_count >= data->must_eat)
+			set_philo_meal_count(data, index, meal_count);
 		philo_sleep(data, index);
 		thread_print(data, index, "is thinking");
 	}
@@ -66,18 +71,20 @@ void	*reaper(void *void_data)
 	t_data			*data;
 	int				index;
 	t_bitmask		*mask;
+	bool			must_eat;
 
 	if (!void_data)
 		return (false);
 	data = (t_data *)void_data;
 	index = 0;
+	must_eat = data->must_eat != 0;
 	mask = bitmask_create(data->nb_philo);
 	while (1)
 	{
-		usleep(2000);
-		if ((get_time_in_ms() - get_philo_meal_time(data, index)) >= data->time_to_die)
+		ft_usleep(5);
+		if ((timestamp() - get_philo_meal_time(data, index)) >= data->time_to_die)
 			die(data, index);
-		if (data->must_eat != 0 && (get_philo_meal_count(data, index) >= data->must_eat))
+		if (must_eat && (get_philo_meal_count(data, index) >= data->must_eat))
 		{
 			bitmask_set(mask, index);
 			if (are_bitmask_all_set(mask))

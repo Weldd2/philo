@@ -2,3 +2,5 @@ obj
 a.out
 philo
 .vscode
+*.pdf
+*.txt

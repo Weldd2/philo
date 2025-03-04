@@ -6,19 +6,11 @@
 /*   By: antoinemura <antoinemura@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/27 12:19:21 by antoinemura       #+#    #+#             */
-/*   Updated: 2025/03/03 21:15:34 by antoinemura      ###   ########.fr       */
+/*   Updated: 2025/03/04 15:20:09 by antoinemura      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
-
-long long	get_time_in_ms(void)
-{
-	struct timeval	tv;
-
-	gettimeofday(&tv, NULL);
-	return (tv.tv_sec * 1000 + tv.tv_usec / 1000);
-}
 
 t_data	*init_data(t_mgc *mgc)
 {
@@ -88,7 +80,7 @@ void	simulation(t_mgc *mgc, t_data *data)
 	{
 		philo_args[index].data = data;
 		philo_args[index].index = index;
-		data->philo_last_meal[index] = get_time_in_ms();
+		data->philo_last_meal[index] = timestamp();
 		if (pthread_create(&(data->philo[index]), NULL, philo_lifecycle, &philo_args[index])  != 0)
 			exit(EXIT_FAILURE);
 		index++;
@@ -139,7 +131,3 @@ int	main(int argc, char **argv)
 	terminate(mgc, data);
 	return (0);
 }
-
-// TODO
-// gerer quand il y a un seul philo
-// il faut que tous les philos aient mange AU MOINS nb_time fois avant de faire exit le program (no dead)

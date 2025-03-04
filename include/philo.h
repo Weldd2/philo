@@ -49,7 +49,8 @@ typedef struct s_philo_args
 	int		index;
 }	t_philo_args;
 
-long long	get_time_in_ms(void);
+void		ft_usleep(int ms);
+long long	timestamp(void);
 void		die(t_data *data, int index);
 int			is_int(char *arg, ssize_t *result);
 void		*philo_lifecycle(void *arg);
@@ -64,7 +65,7 @@ void		ft_error(t_mgc *mgc, char *error_msg);
 void		*reaper(void *void_data);
 bool		is_dead(t_data *data);
 ssize_t		get_philo_meal_count(t_data *data, int index);
-void		increment_philo_meal_count(t_data *data, int index);
+void		set_philo_meal_count(t_data *data, int index, ssize_t value);
 long long	get_philo_meal_time(t_data *data, int index);
 void		set_philo_meal_time(t_data *data, int index, long long value);
 

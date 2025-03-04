@@ -6,7 +6,7 @@
 /*   By: antoinemura <antoinemura@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/03 21:32:24 by antoinemura       #+#    #+#             */
-/*   Updated: 2025/03/03 22:07:53 by antoinemura      ###   ########.fr       */
+/*   Updated: 2025/03/04 14:18:59 by antoinemura      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
 # include <stdbool.h>
 # define BITS_PER_WORD (sizeof(word_t) * 8)
 
-typedef unsigned long long word_t;
+typedef unsigned long long	word_t;
 
 typedef struct s_bitmask
 {
