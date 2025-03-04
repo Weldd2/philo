@@ -6,7 +6,7 @@
 /*   By: antoinemura <antoinemura@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/04 19:35:21 by antoinemura       #+#    #+#             */
-/*   Updated: 2025/03/04 19:47:25 by antoinemura      ###   ########.fr       */
+/*   Updated: 2025/03/04 22:59:10 by antoinemura      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,6 @@ void	philo_eat(t_data *data, int index)
 	pthread_mutex_lock(&data->forks[fork2]);
 	thread_print(data, index, "has taken a fork");
 	thread_print(data, index, "is eating");
-	set_philo_meal_time(data, index, timestamp());
 	ft_usleep(data->time_to_eat);
 	set_philo_meal_time(data, index, timestamp());
 	pthread_mutex_unlock(&data->forks[fork1]);
