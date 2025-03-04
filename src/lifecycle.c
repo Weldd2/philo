@@ -6,7 +6,7 @@
 /*   By: antoinemura <antoinemura@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/27 12:17:54 by antoinemura       #+#    #+#             */
-/*   Updated: 2025/03/04 13:07:34 by antoinemura      ###   ########.fr       */
+/*   Updated: 2025/03/04 13:25:52 by antoinemura      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,9 +54,7 @@ void	*philo_lifecycle(void *arg)
 	while (!is_dead(data))
 	{
 		philo_eat(data, index);
-		pthread_mutex_lock(&data->philo_meal_count_mutex[index]);
-		data->philo_meal_count[index]++;
-		pthread_mutex_unlock(&data->philo_meal_count_mutex[index]);
+		increment_philo_meal_count(data, index);
 		philo_sleep(data, index);
 		thread_print(data, index, "is thinking");
 	}

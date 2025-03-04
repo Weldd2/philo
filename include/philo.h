@@ -64,7 +64,7 @@ void		ft_error(t_mgc *mgc, char *error_msg);
 void		*reaper(void *void_data);
 bool		is_dead(t_data *data);
 ssize_t		get_philo_meal_count(t_data *data, int index);
-void		set_philo_meal_count(t_data *data, int index, ssize_t value);
+void		increment_philo_meal_count(t_data *data, int index);
 long long	get_philo_meal_time(t_data *data, int index);
 void		set_philo_meal_time(t_data *data, int index, long long value);
 
