@@ -17,30 +17,6 @@ OBJDIR      = obj
 INCS        = -I include
 
 # **************************************************************************** #
-#                              SOURCES PRINCIPAUX                              #
-# **************************************************************************** #
-# philo_SRCS = \
-# src/philo.c \
-# src/algorithm/closest_index.c \
-# src/algorithm/move_operations.c \
-# src/algorithm/move_operations2.c \
-# src/algorithm/rotation_cases.c \
-# src/algorithm/rotation_costs.c \
-# src/algorithm/sort_operations.c \
-# src/algorithm/turk_algorithm.c \
-# src/args/args.c \
-# src/ope/ope.c \
-# src/ope/push.c \
-# src/ope/rotate.c \
-# src/ope/rrotate.c \
-# src/tools/tools.c \
-# src/tools/max_min.c \
-# src/tools/atoi.c \
-# src/error.c \
-# src/init.c \
-# src/node.c \
-
-# **************************************************************************** #
 #                    LISTE GLOBALE DES SOURCES ET DES OBJETS                   #
 # **************************************************************************** #
 # SRCS        = $(philo_SRCS) $(MEM_SRCS) $(STR_SRCS)
@@ -101,20 +77,20 @@ install:
 	git submodule update
 	@echo "Submodules initialized/updated."
 
+
 # -----------------------------------------------------------------------------
-# Règles de debug, valgrind
+# Règles de debug, valgrind et TSAN
 # -----------------------------------------------------------------------------
 VALGRIND_FLAGS = --leak-check=full --show-leak-kinds=all --track-origins=yes
-TEST_ARGUMENTS = 4 410 200 200 80
+TEST_ARGUMENTS = 4 310 200 100
 
 valgrind: CFLAGS += -g
 valgrind: re
 	valgrind $(VALGRIND_FLAGS) ./$(NAME) $(TEST_ARGUMENTS)
 
-helgrind: CFLAGS += -g
-helgrind: VALGRIND_FLAGS = --quiet --tool=helgrind
-helgrind: re
-	valgrind $(VALGRIND_FLAGS) ./$(NAME) $(TEST_ARGUMENTS)
+data_race: CFLAGS += -pthread -fsanitize=thread -g -O1
+data_race: re
+	./$(NAME) $(TEST_ARGUMENTS)
 
 debug: CFLAGS += -g
 debug: re

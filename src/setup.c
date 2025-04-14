@@ -6,7 +6,7 @@
 /*   By: antoinemura <antoinemura@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 10:00:00 by improved          #+#    #+#             */
-/*   Updated: 2025/04/14 17:47:45 by antoinemura      ###   ########.fr       */
+/*   Updated: 2025/04/14 19:08:39 by antoinemura      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ int	init_forks(t_setup *setup)
 	int	i;
 
 	i = 0;
-	setup->forks = malloc(sizeof(pthread_mutex_t) * setup->num_philo);
+	setup->forks = malloc(sizeof(t_mutex) * setup->num_philo);
 	if (!setup->forks)
 		return (1);
 	while (i < setup->num_philo)
@@ -63,8 +63,8 @@ int	init_forks(t_setup *setup)
 	return (0);
 }
 
-void	set_philo_mutexes(int i, t_philo *philo, pthread_mutex_t *forks,\
-	pthread_mutex_t **p_forks)
+void	set_philo_mutexes(int i, t_philo *philo, t_mutex *forks,\
+	t_mutex **p_forks)
 {
 	p_forks[LEFT] = &forks[i];
 	p_forks[RIGHT] = &forks[(i + 1) % philo->setup->num_philo];
@@ -87,6 +87,8 @@ int	init_philos(t_setup *setup, t_philo **philos)
 		(*philos)[i].last_ate_msec = retrieve_time_since_ms(0);
 		(*philos)[i].deadline = (*philos)[i].last_ate_msec + setup->msec_to_die;
 		(*philos)[i].setup = setup;
+		if (pthread_mutex_init(&(*philos)[i].active_lock, NULL) != 0)
+			return (1);
 		if (pthread_mutex_init(&(*philos)[i].eat_lock, NULL) != 0)
 			return (1);
 		set_philo_mutexes(i, &(*philos)[i], setup->forks, (*philos)[i].p_forks);

@@ -6,21 +6,22 @@
 /*   By: antoinemura <antoinemura@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 10:00:00 by improved          #+#    #+#             */
-/*   Updated: 2025/04/14 18:04:28 by antoinemura      ###   ########.fr       */
+/*   Updated: 2025/04/14 19:16:43 by antoinemura      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-void	*philo_routine(t_philo *philo, pthread_t tid)
+void	*philo_routine(t_philo *philo, t_thread tid)
 {
 	if (philo->setup->num_philo == 1)
 	{
 		status_change_message(philo, MSG_FORK, FORK);
 		u_sleep_better(philo->setup->msec_to_die * 1000);
+		pthread_mutex_lock(&philo->active_lock);
 		philo->active = false;
-		pthread_join(tid, NULL);
-		return (NULL);
+		pthread_mutex_unlock(&philo->active_lock);
+		return (pthread_join(tid, NULL), NULL);
 	}
 	if (philo->seat % 2 == 0)
 		usleep(1000);
@@ -34,44 +35,63 @@ void	*philo_routine(t_philo *philo, pthread_t tid)
 			usleep(500);
 		}
 	}
+	pthread_mutex_lock(&philo->active_lock);
 	philo->active = false;
-	pthread_join(tid, NULL);
-	return (NULL);
+	pthread_mutex_unlock(&philo->active_lock);
+	return (pthread_join(tid, NULL), NULL);
 }
 
 void	*philo_do(void *philo_arg)
 {
 	t_philo		*philo;
-	pthread_t	tid;
+	t_thread	tid;
 
 	philo = (t_philo *)philo_arg;
+	pthread_mutex_lock(&philo->active_lock);
 	philo->active = true;
+	pthread_mutex_unlock(&philo->active_lock);
 	if (pthread_create(&tid, NULL, &philo_check, philo_arg) != 0)
 		return ((void *)1);
 	return (philo_routine(philo, tid));
 }
 
+int	philo_check_conditions(t_philo *philo)
+{
+	uintmax_t	current_time;
+
+	if (lock_check(philo, &philo->eat_lock, "philo_check") != 0)
+		return (1);
+	current_time = retrieve_time_since_ms(0);
+	if (current_time > philo->deadline)
+	{
+		pthread_mutex_unlock(&philo->eat_lock);
+		handle_death(philo);
+		return (1);
+	}
+	pthread_mutex_unlock(&philo->eat_lock);
+	if (philo->setup->must_eat > 0 && has_eaten_enough(philo))
+	{
+		handle_full_philo(philo);
+		return (1);
+	}
+	return (0);
+}
+
 void	*philo_check(void *philo_arg)
 {
 	t_philo		*philo;
-	uintmax_t	current_time;
+	bool		active;
 
 	philo = (t_philo *)philo_arg;
 	while (1)
 	{
-		if (!philo->active)
+		pthread_mutex_lock(&philo->active_lock);
+		active = philo->active;
+		pthread_mutex_unlock(&philo->active_lock);
+		if (!active)
 			break ;
-		if (lock_check(philo, &philo->eat_lock, "philo_check") != 0)
+		if (philo_check_conditions(philo) != 0)
 			return ((void *)1);
-		current_time = retrieve_time_since_ms(0);
-		if (current_time > philo->deadline)
-		{
-			pthread_mutex_unlock(&philo->eat_lock);
-			return (handle_death(philo));
-		}
-		pthread_mutex_unlock(&philo->eat_lock);
-		if (philo->setup->must_eat > 0 && has_eaten_enough(philo))
-			return (handle_full_philo(philo));
 		usleep(1000);
 	}
 	return (NULL);

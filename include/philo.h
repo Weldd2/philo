@@ -6,7 +6,7 @@
 /*   By: antoinemura <antoinemura@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 17:08:11 by antoinemura       #+#    #+#             */
-/*   Updated: 2025/04/14 17:47:17 by antoinemura      ###   ########.fr       */
+/*   Updated: 2025/04/14 19:11:22 by antoinemura      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,23 +64,24 @@ typedef struct s_setup
 	int				full_philos;
 	uintmax_t		program_start_ms;
 	bool			someone_dead;
-	pthread_mutex_t	msg_lock;
-	pthread_mutex_t	dead_lock;
-	pthread_mutex_t	*forks;
+	t_mutex			msg_lock;
+	t_mutex			dead_lock;
+	t_mutex			*forks;
 	struct s_init	initialized;
 }	t_setup;
 
 typedef struct s_philo
 {
-	pthread_t		id;
+	t_thread		id;
 	int				seat;
 	bool			active;
+	t_mutex			active_lock;
 	int				times_eaten;
 	uintmax_t		last_ate_msec;
 	uintmax_t		deadline;
 	struct s_setup	*setup;
-	pthread_mutex_t	eat_lock;
-	pthread_mutex_t	*p_forks[2];
+	t_mutex			eat_lock;
+	t_mutex			*p_forks[2];
 }	t_philo;
 
 /* Main functions */
@@ -93,8 +94,8 @@ void		init_setup(t_setup *setup);
 int			parse_args_into_setup(t_setup *setup, const char **args);
 int			init_forks(t_setup *setup);
 int			init_philos(t_setup *setup, t_philo **philos);
-void		set_philo_mutexes(int i, t_philo *philo, pthread_mutex_t *forks,\
-		pthread_mutex_t **p_forks);
+void		set_philo_mutexes(int i, t_philo *philo, t_mutex *forks,\
+		t_mutex **p_forks);
 
 /* Philosopher lifecycle */
 void		*philo_do(void *philo_arg);
@@ -109,7 +110,7 @@ void		philo_clean_forks(t_philo *philo);
 uintmax_t	retrieve_time_since_ms(uintmax_t start);
 uintmax_t	retrieve_time_us(void);
 void		u_sleep_better(uintmax_t usec);
-int			lock_check(t_philo *philo, pthread_mutex_t *lock, const char *fn);
+int			lock_check(t_philo *philo, t_mutex *lock, const char *fn);
 int			update_eat_time(t_philo *philo);
 int			status_change_message(t_philo *philo, const char *message,\
 		t_msg_type type);

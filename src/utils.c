@@ -6,7 +6,7 @@
 /*   By: antoinemura <antoinemura@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 10:00:00 by improved          #+#    #+#             */
-/*   Updated: 2025/04/14 17:50:21 by antoinemura      ###   ########.fr       */
+/*   Updated: 2025/04/14 19:08:20 by antoinemura      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ void	u_sleep_better(uintmax_t usec)
 		usleep(100);
 }
 
-int	lock_check(t_philo *philo, pthread_mutex_t *lock, const char *fn)
+int	lock_check(t_philo *philo, t_mutex *lock, const char *fn)
 {
 	if (pthread_mutex_lock(lock) != 0)
 	{

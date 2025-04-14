@@ -6,7 +6,7 @@
 /*   By: antoinemura <antoinemura@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 10:00:00 by improved          #+#    #+#             */
-/*   Updated: 2025/04/14 17:17:23 by antoinemura      ###   ########.fr       */
+/*   Updated: 2025/04/14 18:46:57 by antoinemura      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,10 @@ int	philo_eat(t_philo *philo)
 		return (1);
 	status_change_message(philo, MSG_EAT, EAT);
 	u_sleep_better(philo->setup->msec_to_eat * 1000);
+	if (lock_check(philo, &philo->eat_lock, "philo_eat") != 0)
+		return (1);
 	philo->times_eaten++;
+	pthread_mutex_unlock(&philo->eat_lock);
 	philo_clean_forks(philo);
 	return (0);
 }

@@ -6,7 +6,7 @@
 /*   By: antoinemura <antoinemura@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 10:00:00 by improved          #+#    #+#             */
-/*   Updated: 2025/04/14 17:28:09 by antoinemura      ###   ########.fr       */
+/*   Updated: 2025/04/14 18:47:40 by antoinemura      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,8 +46,15 @@ bool	gameover(t_philo *philo)
 
 bool	has_eaten_enough(t_philo *philo)
 {
-	return (philo->setup->must_eat > 0
-		&& philo->times_eaten >= philo->setup->must_eat);
+	bool	result;
+
+	if (philo->setup->must_eat <= 0)
+		return (false);
+	if (lock_check(philo, &philo->eat_lock, "has_eaten_enough") != 0)
+		return (false);
+	result = (philo->times_eaten >= philo->setup->must_eat);
+	pthread_mutex_unlock(&philo->eat_lock);
+	return (result);
 }
 
 void	set_dead(t_philo *philo)
