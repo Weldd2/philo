@@ -6,7 +6,7 @@
 /*   By: antoinemura <antoinemura@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 10:00:00 by improved          #+#    #+#             */
-/*   Updated: 2025/04/14 19:08:39 by antoinemura      ###   ########.fr       */
+/*   Updated: 2025/04/14 20:19:46 by antoinemura      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ int	init_forks(t_setup *setup)
 	return (0);
 }
 
-void	set_philo_mutexes(int i, t_philo *philo, t_mutex *forks,\
+void	set_philo_mutexes(int i, t_philo *philo, t_mutex *forks, \
 	t_mutex **p_forks)
 {
 	p_forks[LEFT] = &forks[i];
