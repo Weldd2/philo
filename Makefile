@@ -19,8 +19,8 @@ INCS        = -I include
 # **************************************************************************** #
 #                    LISTE GLOBALE DES SOURCES ET DES OBJETS                   #
 # **************************************************************************** #
-# SRCS        = $(philo_SRCS) $(MEM_SRCS) $(STR_SRCS)
-SRCS          = $(shell find $(SRCDIR) -type f -name '*.c')
+# SRCS          = $(shell find $(SRCDIR) -type f -name '*.c')
+SRCS          = src/action.c src/lifecycle.c src/main.c src/print.c src/setup.c src/state.c src/utils.c
 
 # On veut que chaque .c soit compilé en obj/<path>.o
 # ex: src/philo.c      -> obj/src/philo.o
