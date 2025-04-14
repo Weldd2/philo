@@ -6,7 +6,7 @@
 /*   By: antoinemura <antoinemura@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 10:00:00 by improved          #+#    #+#             */
-/*   Updated: 2025/04/14 20:36:20 by antoinemura      ###   ########.fr       */
+/*   Updated: 2025/04/14 21:08:31 by antoinemura      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,10 +21,10 @@ void	*philo_routine(t_philo *philo, t_thread tid)
 		pthread_mutex_lock(&philo->active_lock);
 		philo->active = false;
 		pthread_mutex_unlock(&philo->active_lock);
+		status_change_message(philo, MSG_DEAD, DEAD);
 		return (pthread_join(tid, NULL), NULL);
 	}
-	if (philo->seat % 2 == 0)
-		usleep(1000);
+	usleep((philo->seat % 2 == 0) * 1000);
 	if (update_eat_time(philo) == 0)
 	{
 		while (!gameover(philo) && !has_eaten_enough(philo))

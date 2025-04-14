@@ -20,7 +20,8 @@ INCS        = -I include
 #                    LISTE GLOBALE DES SOURCES ET DES OBJETS                   #
 # **************************************************************************** #
 # SRCS          = $(shell find $(SRCDIR) -type f -name '*.c')
-SRCS          = src/action.c src/lifecycle.c src/main.c src/print.c src/setup.c src/state.c src/utils.c
+SRCS          = src/action.c src/lifecycle.c src/main.c src/print.c src/setup.c\
+                src/state.c src/utils.c
 
 # On veut que chaque .c soit compilé en obj/<path>.o
 # ex: src/philo.c      -> obj/src/philo.o
@@ -82,7 +83,7 @@ install:
 # Règles de debug, valgrind et TSAN
 # -----------------------------------------------------------------------------
 VALGRIND_FLAGS = --leak-check=full --show-leak-kinds=all --track-origins=yes
-TEST_ARGUMENTS = 4 310 200 100
+TEST_ARGUMENTS = 1 800 200 200 200
 
 valgrind: CFLAGS += -g
 valgrind: re
