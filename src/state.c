@@ -6,7 +6,7 @@
 /*   By: antoinemura <antoinemura@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 10:00:00 by improved          #+#    #+#             */
-/*   Updated: 2025/04/14 18:47:40 by antoinemura      ###   ########.fr       */
+/*   Updated: 2025/04/14 20:36:42 by antoinemura      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,16 +20,16 @@ void	*handle_death(t_philo *philo)
 
 void	*handle_full_philo(t_philo *philo)
 {
-	if (lock_check(philo, &philo->setup->dead_lock, "handle_full_philo") != 0)
+	if (lock_check(philo, &philo->data->dead_lock, "handle_full_philo") != 0)
 		return ((void *)1);
-	philo->setup->full_philos++;
-	if (philo->setup->full_philos >= philo->setup->num_philo)
+	philo->data->full_philos++;
+	if (philo->data->full_philos >= philo->data->num_philo)
 	{
-		philo->setup->someone_dead = true;
-		pthread_mutex_unlock(&philo->setup->dead_lock);
+		philo->data->someone_dead = true;
+		pthread_mutex_unlock(&philo->data->dead_lock);
 		return (NULL);
 	}
-	pthread_mutex_unlock(&philo->setup->dead_lock);
+	pthread_mutex_unlock(&philo->data->dead_lock);
 	return (NULL);
 }
 
@@ -37,10 +37,10 @@ bool	gameover(t_philo *philo)
 {
 	bool	result;
 
-	if (lock_check(philo, &philo->setup->dead_lock, "gameover") != 0)
+	if (lock_check(philo, &philo->data->dead_lock, "gameover") != 0)
 		return (true);
-	result = philo->setup->someone_dead;
-	pthread_mutex_unlock(&philo->setup->dead_lock);
+	result = philo->data->someone_dead;
+	pthread_mutex_unlock(&philo->data->dead_lock);
 	return (result);
 }
 
@@ -48,19 +48,19 @@ bool	has_eaten_enough(t_philo *philo)
 {
 	bool	result;
 
-	if (philo->setup->must_eat <= 0)
+	if (philo->data->must_eat <= 0)
 		return (false);
 	if (lock_check(philo, &philo->eat_lock, "has_eaten_enough") != 0)
 		return (false);
-	result = (philo->times_eaten >= philo->setup->must_eat);
+	result = (philo->times_eaten >= philo->data->must_eat);
 	pthread_mutex_unlock(&philo->eat_lock);
 	return (result);
 }
 
 void	set_dead(t_philo *philo)
 {
-	if (lock_check(philo, &philo->setup->dead_lock, "set_dead") != 0)
+	if (lock_check(philo, &philo->data->dead_lock, "set_dead") != 0)
 		return ;
-	philo->setup->someone_dead = true;
-	pthread_mutex_unlock(&philo->setup->dead_lock);
+	philo->data->someone_dead = true;
+	pthread_mutex_unlock(&philo->data->dead_lock);
 }

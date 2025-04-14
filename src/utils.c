@@ -6,7 +6,7 @@
 /*   By: antoinemura <antoinemura@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 10:00:00 by improved          #+#    #+#             */
-/*   Updated: 2025/04/14 19:08:20 by antoinemura      ###   ########.fr       */
+/*   Updated: 2025/04/14 20:36:20 by antoinemura      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ int	update_eat_time(t_philo *philo)
 	if (lock_check(philo, &philo->eat_lock, "update_eat_time") != 0)
 		return (1);
 	philo->last_ate_msec = retrieve_time_since_ms(0);
-	philo->deadline = philo->last_ate_msec + philo->setup->msec_to_die;
+	philo->deadline = philo->last_ate_msec + philo->data->msec_to_die;
 	pthread_mutex_unlock(&philo->eat_lock);
 	return (0);
 }

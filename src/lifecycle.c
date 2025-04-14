@@ -6,7 +6,7 @@
 /*   By: antoinemura <antoinemura@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 10:00:00 by improved          #+#    #+#             */
-/*   Updated: 2025/04/14 19:16:43 by antoinemura      ###   ########.fr       */
+/*   Updated: 2025/04/14 20:36:20 by antoinemura      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,10 +14,10 @@
 
 void	*philo_routine(t_philo *philo, t_thread tid)
 {
-	if (philo->setup->num_philo == 1)
+	if (philo->data->num_philo == 1)
 	{
 		status_change_message(philo, MSG_FORK, FORK);
-		u_sleep_better(philo->setup->msec_to_die * 1000);
+		u_sleep_better(philo->data->msec_to_die * 1000);
 		pthread_mutex_lock(&philo->active_lock);
 		philo->active = false;
 		pthread_mutex_unlock(&philo->active_lock);
@@ -69,7 +69,7 @@ int	philo_check_conditions(t_philo *philo)
 		return (1);
 	}
 	pthread_mutex_unlock(&philo->eat_lock);
-	if (philo->setup->must_eat > 0 && has_eaten_enough(philo))
+	if (philo->data->must_eat > 0 && has_eaten_enough(philo))
 	{
 		handle_full_philo(philo);
 		return (1);

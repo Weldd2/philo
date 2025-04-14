@@ -6,41 +6,41 @@
 /*   By: antoinemura <antoinemura@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 10:00:00 by improved          #+#    #+#             */
-/*   Updated: 2025/04/14 17:45:35 by antoinemura      ###   ########.fr       */
+/*   Updated: 2025/04/14 20:38:19 by antoinemura      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-int	main(int ac, char **av)
+int	main(int argc, char **argv)
 {
-	t_setup	setup;
+	t_data	data;
 	t_philo	*philos;
 
-	if (ac < 5 || ac > 6)
-		return (print_error(ERR_SETUP));
-	init_setup(&setup);
-	if (init_setup_and_philos(&setup, &philos, av))
-		return (clean_exit(&setup, NULL));
-	if (start_philo_threads(&setup, philos))
-		return (print_error(ERR_GEN) | clean_exit(&setup, &philos));
-	clean_exit(&setup, &philos);
+	if (argc < 5 || argc > 6)
+		return (print_error(ERR_DATA));
+	init_data(&data);
+	if (init_data_and_philos(&data, &philos, argv))
+		return (clean_exit(&data, NULL));
+	if (start_philo_threads(&data, philos))
+		return (print_error(ERR_GEN), clean_exit(&data, &philos));
+	clean_exit(&data, &philos);
 	return (0);
 }
 
-int	init_setup_and_philos(t_setup *setup, t_philo **philos, char **av)
+int	init_data_and_philos(t_data *data, t_philo **philos, char **av)
 {
-	if (parse_args_into_setup(setup, (const char **)(av + 1)))
+	if (parse_args_into_data(data, (const char **)(av + 1)))
 	{
-		print_error(ERR_SETUP);
+		print_error(ERR_DATA);
 		return (1);
 	}
-	if (init_forks(setup))
+	if (init_forks(data))
 	{
 		print_error(ERR_GEN);
 		return (1);
 	}
-	if (init_philos(setup, philos))
+	if (init_philos(data, philos))
 	{
 		print_error(ERR_GEN);
 		return (1);
@@ -48,19 +48,19 @@ int	init_setup_and_philos(t_setup *setup, t_philo **philos, char **av)
 	return (0);
 }
 
-int	start_philo_threads(t_setup *setup, t_philo *philos)
+int	start_philo_threads(t_data *data, t_philo *philos)
 {
 	int	i;
 
 	i = 0;
-	while (i < setup->num_philo)
+	while (i < data->num_philo)
 	{
 		if (pthread_create(&philos[i].id, NULL, &philo_do, &philos[i]) != 0)
 			return (1);
 		i++;
 	}
 	i = 0;
-	while (i < setup->num_philo)
+	while (i < data->num_philo)
 	{
 		if (pthread_join(philos[i].id, NULL) != 0)
 			return (1);
@@ -69,24 +69,24 @@ int	start_philo_threads(t_setup *setup, t_philo *philos)
 	return (0);
 }
 
-int	clean_exit(t_setup *setup, t_philo **philos)
+int	clean_exit(t_data *data, t_philo **philos)
 {
 	int	i;
 
-	if (setup->initialized.fork_init)
+	if (data->initialized.fork_init)
 	{
 		i = 0;
-		while (i < setup->num_philo)
+		while (i < data->num_philo)
 		{
-			pthread_mutex_destroy(&setup->forks[i]);
+			pthread_mutex_destroy(&data->forks[i]);
 			i++;
 		}
-		free(setup->forks);
+		free(data->forks);
 	}
-	if (philos && setup->initialized.philos_init)
+	if (philos && data->initialized.philos_init)
 	{
 		i = 0;
-		while (i < setup->num_philo)
+		while (i < data->num_philo)
 		{
 			pthread_mutex_destroy(&(*philos)[i].eat_lock);
 			i++;
@@ -94,6 +94,6 @@ int	clean_exit(t_setup *setup, t_philo **philos)
 		free(*philos);
 		*philos = NULL;
 	}
-	pthread_mutex_destroy(&setup->msg_lock);
-	return (pthread_mutex_destroy(&setup->dead_lock), 1);
+	pthread_mutex_destroy(&data->msg_lock);
+	return (pthread_mutex_destroy(&data->dead_lock), 1);
 }

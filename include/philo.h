@@ -6,7 +6,7 @@
 /*   By: antoinemura <antoinemura@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 17:08:11 by antoinemura       #+#    #+#             */
-/*   Updated: 2025/04/14 20:31:10 by antoinemura      ###   ########.fr       */
+/*   Updated: 2025/04/14 20:36:36 by antoinemura      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ typedef enum e_msg_type
 
 typedef enum e_error
 {
-	ERR_SETUP,
+	ERR_DATA,
 	ERR_GEN
 }	t_error;
 
@@ -54,7 +54,7 @@ typedef struct s_init
 	bool	philos_init;
 }	t_init;
 
-typedef struct s_setup
+typedef struct s_data
 {
 	int				num_philo;
 	int				msec_to_die;
@@ -68,7 +68,7 @@ typedef struct s_setup
 	t_mutex			dead_lock;
 	t_mutex			*forks;
 	struct s_init	initialized;
-}	t_setup;
+}	t_data;
 
 typedef struct s_philo
 {
@@ -79,21 +79,21 @@ typedef struct s_philo
 	int				times_eaten;
 	uintmax_t		last_ate_msec;
 	uintmax_t		deadline;
-	struct s_setup	*setup;
+	struct s_data	*data;
 	t_mutex			eat_lock;
 	t_mutex			*p_forks[2];
 }	t_philo;
 
 /* Main functions */
-int			init_setup_and_philos(t_setup *setup, t_philo **philos, char **av);
-int			start_philo_threads(t_setup *setup, t_philo *philos);
-int			clean_exit(t_setup *setup, t_philo **philos);
+int			init_data_and_philos(t_data *data, t_philo **philos, char **av);
+int			start_philo_threads(t_data *data, t_philo *philos);
+int			clean_exit(t_data *data, t_philo **philos);
 
 /* Setup and initialization */
-void		init_setup(t_setup *setup);
-int			parse_args_into_setup(t_setup *setup, const char **args);
-int			init_forks(t_setup *setup);
-int			init_philos(t_setup *setup, t_philo **philos);
+void		init_data(t_data *data);
+int			parse_args_into_data(t_data *data, const char **args);
+int			init_forks(t_data *data);
+int			init_philos(t_data *data, t_philo **philos);
 void		set_philo_mutexes(int i, t_philo *philo, t_mutex *forks, \
 		t_mutex **p_forks);
 
