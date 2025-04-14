@@ -6,7 +6,7 @@
 /*   By: antoinemura <antoinemura@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 17:50:06 by antoinemura       #+#    #+#             */
-/*   Updated: 2025/04/14 18:01:06 by antoinemura      ###   ########.fr       */
+/*   Updated: 2025/04/14 20:31:25 by antoinemura      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ int	status_change_message(t_philo *philo, const char *message, t_msg_type type)
 		return (1);
 	if (!gameover(philo))
 	{
-		print_message(philo, message, type);
+		print_message(philo, message);
 		if (type == DEAD)
 			set_dead(philo);
 	}
@@ -27,13 +27,12 @@ int	status_change_message(t_philo *philo, const char *message, t_msg_type type)
 	return (0);
 }
 
-void	print_message(t_philo *philo, const char *message, t_msg_type type)
+void	print_message(t_philo *philo, const char *message)
 {
 	uintmax_t	current_time;
 
 	current_time = retrieve_time_since_ms(philo->setup->program_start_ms);
 	printf("%lu %d %s\n", current_time, philo->seat, message);
-	(void)type;
 }
 
 int	print_error(t_error err)
