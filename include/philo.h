@@ -6,7 +6,7 @@
 /*   By: antoinemura <antoinemura@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 17:08:11 by antoinemura       #+#    #+#             */
-/*   Updated: 2025/04/14 20:36:36 by antoinemura      ###   ########.fr       */
+/*   Updated: 2025/04/14 21:25:24 by antoinemura      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,7 +114,7 @@ int			lock_check(t_philo *philo, t_mutex *lock, const char *fn);
 int			update_eat_time(t_philo *philo);
 int			status_change_message(t_philo *philo, const char *message, \
 		t_msg_type type);
-void		print_message(t_philo *philo, const char *message);
+void		print_message(t_philo *philo, const char *message, t_msg_type type);
 int			print_error(t_error err);
 
 /* State checking */
