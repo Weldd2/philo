@@ -6,7 +6,7 @@
 /*   By: antoinemura <antoinemura@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 17:08:11 by antoinemura       #+#    #+#             */
-/*   Updated: 2025/04/14 21:25:24 by antoinemura      ###   ########.fr       */
+/*   Updated: 2025/04/15 02:00:14 by antoinemura      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,6 +116,7 @@ int			status_change_message(t_philo *philo, const char *message, \
 		t_msg_type type);
 void		print_message(t_philo *philo, const char *message, t_msg_type type);
 int			print_error(t_error err);
+int			is_int(const char *str);
 
 /* State checking */
 void		*handle_death(t_philo *philo);

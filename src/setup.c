@@ -30,12 +30,12 @@ void	init_data(t_data *data)
 
 int	parse_args_into_data(t_data *data, const char **args)
 {
-	data->num_philo = atoi(args[0]);
-	data->msec_to_die = atoi(args[1]);
-	data->msec_to_eat = atoi(args[2]);
-	data->msec_to_sleep = atoi(args[3]);
+	data->num_philo = is_int(args[0]);
+	data->msec_to_die = is_int(args[1]);
+	data->msec_to_eat = is_int(args[2]);
+	data->msec_to_sleep = is_int(args[3]);
 	if (args[4])
-		data->must_eat = atoi(args[4]);
+		data->must_eat = is_int(args[4]);
 	else
 		data->must_eat = 0;
 	if (data->num_philo <= 0 || data->msec_to_die <= 0
